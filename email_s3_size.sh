@@ -10,10 +10,12 @@ destinatario="EMAIL_DESTINATION"
 
 NAME_BUCK="NAME_YOUR_BUCKET"
 
+NAME_BUCK="tcngfiles"
+
 CMD_TOTAL_COPIA=$(/usr/bin/s3cmd du -H s3://$NAME_BUCK | cut -d " " -f1)
 CMD_TOTAL_FILE=$(/usr/bin/s3cmd ls s3://$NAME_BUCK --recursive  | wc -l)
 
-TOTAL_DADOS=1024  ##### SIZE OF COPY
+TOTAL_DADOS=1024  ##### MUDAR AQUI PORRAAA
 
 TOTAL_PERC=$(echo $CMD_TOTAL_COPIA | sed 's/G//g' | sed -e 's/^[ \t]*//')
 CALCU_PERC=$(echo $TOTAL_PERC/$TOTAL_DADOS*100 | bc -l | cut -d "." -f1)
@@ -21,7 +23,7 @@ CALCU_PERC=$(echo $TOTAL_PERC/$TOTAL_DADOS*100 | bc -l | cut -d "." -f1)
 DATA=`date +%d-%m-%Y`
 HORA=`date +%H:%M`
 
-FILE_LOG="/tmp/log_tecnogera.log" ### NAME_LOG
+FILE_LOG="/tmp/log_tecnogera.log"
 
 echo -e $DATA $HORA '\t' $CMD_TOTAL_COPIA '\t\t' $CMD_TOTAL_FILE >> $FILE_LOG
 
@@ -30,6 +32,12 @@ READ_LOG_ANT_FILE=$(cat $FILE_LOG | tail -n 2 | cut -d " " -f6 | head -1)
 
 READ_LOG_ULT_SIZE=$(cat $FILE_LOG | tail -n 1 | cut -d " " -f4)
 READ_LOG_ULT_FILE=$(cat $FILE_LOG | tail -n 1 | cut -d " " -f6)
+
+### CALC SPEED AVG COPY
+N_LINE=$( cat $FILE_LOG | wc -l )
+TOTAL_COPY=$( echo $READ_LOG_ULT_SIZE | sed 's/G//' )
+MEDIA=$( echo "scale=2; $TOTAL_COPY/$N_LINE" | bc -l  )
+
 
 HTML1=""
 
@@ -63,6 +71,10 @@ HTML="
 <tr>
     <td height='40' style='background-image:url(http://zabbix.cscm3.com.br/alerta/bg.jpg); background-repeat:no-repeat;  padding-left:10px;'><img src='http://zabbix.cscm3.com.br/alerta/FILE-S3.PNG' width='23' height='22' /></td>
     <td height='40' style='background-image:url(http://zabbix.cscm3.com.br/alerta/bg.jpg); background-repeat:no-repeat;  padding-left:3px;padding-left:3px; font-family:Verdana, Geneva, sans-serif; font-size:14px;'>Total de arquivos copiados: $CMD_TOTAL_FILE</td>
+</tr>
+<tr>
+    <td height='40' style='background-image:url(http://zabbix.cscm3.com.br/alerta/bg.jpg); background-repeat:no-repeat;  padding-left:10px;'><img src='http://zabbix.cscm3.com.br/alerta/MEDIA.PNG' width='23' height='22' /></td>
+    <td height='40' style='background-image:url(http://zabbix.cscm3.com.br/alerta/bg.jpg); background-repeat:no-repeat;  padding-left:3px;padding-left:3px; font-family:Verdana, Geneva, sans-serif; font-size:14px;'>Velocidade Média da Cópia: $MEDIA Gb / Hora</td>
 </tr>
 $HTML1
 <tr>
