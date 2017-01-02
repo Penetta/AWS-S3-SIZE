@@ -23,7 +23,8 @@
 
 <b> Example of email send OK </b>
 
-![IMG_EMAIL_S3_OK](https://cloud.githubusercontent.com/assets/16126831/21578022/16632240-cf58-11e6-8816-0f7c4d0c8bbe.PNG)
+![capture](https://cloud.githubusercontent.com/assets/16126831/21591759/17725f88-d0ee-11e6-90ed-02027a4ab015.PNG)
+
 
 <b> Example of email send PROBLEM </b>
 
